@@ -13,9 +13,8 @@ SDL_Window *render_init_window(u32 width, u32 height)
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION,3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,3);
 
-	if(SDL_Init(SDL_INIT_VIDEO) < 0)
-		ERROR_EXIT("Failed to initialize SDL! %s\n",SDL_GetError());	
-
+	if(SDL_Init(SDL_INIT_VIDEO) != 0)
+		printf("sfasdf");
 	SDL_Window *window = SDL_CreateWindow
 	(
 		"Game",
