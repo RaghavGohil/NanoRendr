@@ -1,8 +1,42 @@
 #include<stdio.h>
-#include<conio.h>
+#include<stdbool.h>
+#include<windows.h>
+#include<glad/glad.h>
+#define SDL_MAIN_HANDLED
+#include<SDL2/SDL.h>
 
-int main()
+#include "engine/global.h"
+
+int main(int argc,char* argv[])
 {
-	printf("Hello World!");	
+	render_init();	
+
+	bool quit = false;
+
+	while(!quit)
+	{
+		SDL_Event event;
+		while(SDL_PollEvent(&event))
+		{
+			switch(event.type)
+			{
+				case SDL_QUIT:
+					quit = true;
+					break;
+				default:
+					break;
+			}
+		}
+		render_begin();
+
+		render_quad
+		(
+			(vec2) {global.render.width*0.5,global.render.height*0.5},
+       			(vec2) {50,50},
+			(vec4) {1,1,1,1}
+		);
+
+		render_end();
+	}
 	return 0;
 }
