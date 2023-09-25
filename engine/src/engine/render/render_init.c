@@ -3,6 +3,8 @@
 
 #include "../util.h"
 #include "../types.h"
+#include "../global.h"
+#include "../io/io.h"
 
 #include "render.h"
 #include "render_init.h"
@@ -75,4 +77,73 @@ void render_init_quad(u32 *vao, u32 *vbo, u32 *ebo)
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,5*sizeof(f32),(void*)(3*sizeof(f32)));
 	glad_glEnableVertexAttribArray(1);
+}
+void render_init_color_texture(u32 *texture)
+{
+	glGenTextures(1,texture);
+	glBindTexture(GL_TEXTURE_2D, *texture);
+	u8 solid_white[4] = {255,255,255,255};		
+	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,1,1,0,GL_RGBA,GL_UNSIGNED_BYTE,solid_white);
+	glBindTexture(GL_TEXTURE_2D,0);
+}
+void render_init_shaders(Render_State_Internal *state)
+{
+	state->shader_default = render_shader_create("../shaders/default.vert","../shaders/default.frag");
+	mat4x4_ortho(state->projection,0,global.render.width,0,global.render.height,-2,2);
+	glUseProgram(state->shader_default);
+	glUniformMatrix4fv
+	(
+	 	glGetUniformLocation(state->shader_default,"projection"),
+		1,
+		GL_FALSE,
+		&state->projection[0][0]
+	);
+}
+u32 render_shader_create(const char *path_vert, const char *path_frag)
+{
+	int success=0;
+	char log[512];
+	File file_vertex = read_file(path_vert);
+	if(!file_vertex.isValid)
+	{
+		ERROR_EXIT("Error loading shader %s\n",path_vert);
+	}
+	u32 shader_vertex = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(shader_vertex,1,(const char *const *)&file_vertex,NULL);
+	glCompileShader(shader_vertex);
+	glGetShaderiv(shader_vertex,GL_COMPILE_STATUS,&success);
+	if(!success)
+	{
+		glGetShaderInfoLog(shader_vertex,512,NULL,log);
+		ERROR_EXIT("Error compiling vertex shader. %s\n",log);
+	}
+
+	File file_fragment= read_file(path_frag);
+	if(!file_fragment.isValid)
+	{
+		ERROR_EXIT("Error loading shader %s\n",path_frag);
+	}
+	u32 shader_fragment= glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(shader_fragment,1,(const char *const *)&file_fragment,NULL);
+	glCompileShader(shader_fragment);
+	glGetShaderiv(shader_fragment,GL_COMPILE_STATUS,&success);
+	if(!success)
+	{
+		glGetShaderInfoLog(shader_fragment,512,NULL,log);
+		ERROR_EXIT("Error compiling fragment shader. %s\n",log);
+	}
+
+	u32 shader = glCreateProgram();
+	glAttachShader(shader,shader_vertex);
+	glAttachShader(shader,shader_fragment);
+	glLinkProgram(shader);
+	glGetProgramiv(shader,GL_LINK_STATUS,&success);
+	if(!success)
+	{
+		glGetProgramInfoLog(shader,512,NULL,log);
+		ERROR_EXIT("Error linking shader. %s\n",log);
+	}
+	free(file_vertex.data);
+	free(file_fragment.data);
+	return shader;
 }
