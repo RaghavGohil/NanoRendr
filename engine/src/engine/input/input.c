@@ -7,7 +7,7 @@ void handle_input(SDL_Event *e,bool *exit)
 	switch(e->type)
 	{
 		case SDL_QUIT:
-			*exit = true;
+			*exit = true; // directly quit out of the engine
 			break;
 		case SDL_MOUSEMOTION:
 			set_mouse_pos(&mouse_pos);

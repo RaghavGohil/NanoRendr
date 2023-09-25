@@ -2,16 +2,17 @@
 
 #include "../global.h"
 #include "render.h"
-#include "render_internal.h"
+#include "render_init.h"
 #include <stdio.h>
 
 static Render_State_Internal state = {0};
 
-void render_init(void)
+void render_init(u32 width, u32 height, char *title)
 {
-	global.render.width = 800;
-	global.render.height = 600;
-	global.render.window = render_init_window(global.render.width,global.render.height);
+	global.render.width = width;
+	global.render.height = height;
+	global.render.title = title;
+	global.render.window = render_init_window(global.render.width,global.render.height,global.render.title);
 	render_init_quad(&state.vao_quad, &state.vbo_quad, &state.ebo_quad);
 }
 
@@ -31,6 +32,5 @@ void render_quad(vec2 pos, vec2 size, vec4 color)
 	glBindVertexArray(state.vao_quad);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
-
 	glBindVertexArray(0);
 }

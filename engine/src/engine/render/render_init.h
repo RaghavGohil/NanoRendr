@@ -12,5 +12,5 @@ typedef struct render_state_internal
 	u32 ebo_quad;
 } Render_State_Internal;
 
-SDL_Window *render_init_window(u32 height, u32 width);
+SDL_Window *render_init_window(u32 height, u32 width, char* title);
 void render_init_quad(u32 *vao, u32 *vbo, u32 *ebo);

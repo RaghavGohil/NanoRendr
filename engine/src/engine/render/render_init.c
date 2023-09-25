@@ -5,19 +5,20 @@
 #include "../types.h"
 
 #include "render.h"
-#include "render_internal.h"
+#include "render_init.h"
 
-SDL_Window *render_init_window(u32 width, u32 height)
+SDL_Window *render_init_window(u32 width, u32 height, char* title)
 {
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,SDL_GL_CONTEXT_PROFILE_CORE);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION,3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,3);
 
 	if(SDL_Init(SDL_INIT_VIDEO) != 0)
-		printf("sfasdf");
+		ERROR_EXIT("Failed to initalize SDL%s\n",SDL_GetError());
+
 	SDL_Window *window = SDL_CreateWindow
 	(
-		"Game",
+		title,	
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
 		width,
@@ -27,7 +28,6 @@ SDL_Window *render_init_window(u32 width, u32 height)
 	
 	if(!window) 
 		ERROR_EXIT("Failed to initialize the window! %s\n",SDL_GetError());		
-
 	SDL_GL_CreateContext(window);
 
 	if(!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) //load the gl function pointers

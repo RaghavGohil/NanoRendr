@@ -1,15 +1,11 @@
 #include<stdio.h>
 #include<stdbool.h>
-#include<windows.h>
-#include<glad/glad.h>
 #define SDL_MAIN_HANDLED
-#include<SDL2/SDL.h>
-
 #include "engine/global.h"
 
 int main(int argc,char* argv[])
 {
-	render_init();	
+	render_init(800,600,"My game");	
 	
 	bool quit = false;
 
