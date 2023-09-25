@@ -3,16 +3,9 @@
 #include "../global.h"
 
 //MOUSE:
-static IVec2 mouse_pos = {0};
-//MOUSE POSITION:
-void set_mouse_pos(IVec2 *v)
+inline void set_mouse_pos()
 {
-	SDL_GetMouseState(&v->x,&v->y);
-}
-
-IVec2 get_mouse_pos()
-{
-	return mouse_pos;
+	SDL_GetMouseState(&global.input.mouse_pos.x,&global.input.mouse_pos.y);
 }
 
 //handles all the inputs
@@ -28,7 +21,7 @@ void handle_input(bool *exit)
 				*exit = true; // directly quit out of the engine
 				break;
 			case SDL_MOUSEMOTION:
-				set_mouse_pos(&mouse_pos);
+				set_mouse_pos();
 				break;
 			default:
 				break;
