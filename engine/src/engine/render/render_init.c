@@ -35,7 +35,7 @@ SDL_Window *render_init_window(u32 width, u32 height, char* title)
 	if(!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) //load the gl function pointers
 		ERROR_EXIT("Failed to load GL! %s\n",SDL_GetError());
 
-	printf("OpenGL loaded.");
+	printf("OpenGL loaded.\n");
 	printf("Vendor:   %s\n",glGetString(GL_VENDOR));
 	printf("Renderer: %s\n",glGetString(GL_RENDERER));
 	printf("Version:  %s\n",glGetString(GL_VERSION));
@@ -88,12 +88,12 @@ void render_init_color_texture(u32 *texture)
 }
 void render_init_shaders(Render_State_Internal *state)
 {
-	state->shader_default = render_shader_create("../shaders/default.vert","../shaders/default.frag");
+	state->shader_default = render_shader_create("./shaders/default.vert","./shaders/default.frag");
 	mat4x4_ortho(state->projection,0,global.render.width,0,global.render.height,-2,2);
 	glUseProgram(state->shader_default);
 	glUniformMatrix4fv
 	(
-	 	glGetUniformLocation(state->shader_default,"projection"),
+		glGetUniformLocation(state->shader_default,"projection"),
 		1,
 		GL_FALSE,
 		&state->projection[0][0]
@@ -108,8 +108,9 @@ u32 render_shader_create(const char *path_vert, const char *path_frag)
 	{
 		ERROR_EXIT("Error loading shader %s\n",path_vert);
 	}
+
 	u32 shader_vertex = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(shader_vertex,1,(const char *const *)&file_vertex,NULL);
+	glShaderSource(shader_vertex,1,(const char * const *)&file_vertex,NULL);
 	glCompileShader(shader_vertex);
 	glGetShaderiv(shader_vertex,GL_COMPILE_STATUS,&success);
 	if(!success)
@@ -118,11 +119,13 @@ u32 render_shader_create(const char *path_vert, const char *path_frag)
 		ERROR_EXIT("Error compiling vertex shader. %s\n",log);
 	}
 
-	File file_fragment= read_file(path_frag);
+	File file_fragment = read_file(path_frag);
+
 	if(!file_fragment.isValid)
 	{
 		ERROR_EXIT("Error loading shader %s\n",path_frag);
 	}
+
 	u32 shader_fragment= glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(shader_fragment,1,(const char *const *)&file_fragment,NULL);
 	glCompileShader(shader_fragment);

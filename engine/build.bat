@@ -9,3 +9,4 @@ echo creating binary
 @REM note: sdl works file with the -l in -lSDL2main and the sdl2 one... include -lib in -lSDL2main which makes it -libSDL2main.
 gcc main.o glad.o global.o render.o render_init.o io.o input.o -o app.exe -L ../lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
 popd
+app
