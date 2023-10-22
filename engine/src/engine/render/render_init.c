@@ -89,7 +89,7 @@ void render_init_color_texture(u32 *texture)
 void render_init_shaders(Render_State_Internal *state)
 {
 	state->shader_default = render_shader_create("./shaders/default.vert","./shaders/default.frag");
-	mat4x4_ortho(state->projection,0,global.render.width,0,global.render.height,-2,2);
+	mat4x4_ortho(state->projection,0,global.render.width,global.render.height,0,-2,2); // to simulate the sdl game engines.
 	glUseProgram(state->shader_default);
 	glUniformMatrix4fv
 	(

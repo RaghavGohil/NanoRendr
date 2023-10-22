@@ -1,5 +1,4 @@
 #include <glad/glad.h>
-
 #include "../global.h"
 #include "render.h"
 #include "render_init.h"
