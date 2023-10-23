@@ -14,17 +14,17 @@ static bool quit = false;
 
 #pragma region GAME
 
-IVec2 ship_pos = {0,0};
-IVec2 rotate_dir = {0,0};
-IVec2 mouse_pos = {0,0};
+vec2 ship_pos = {0,0};
+vec2 rotate_dir = {0,0};
+vec2 mouse_pos = {0,0};
 
 #pragma endregion
 
 void init()
 {
 	//ship:	
-	ship_pos.x = SCREEN_WIDTH;
-	ship_pos.y = SCREEN_HEIGHT;
+	ship_pos[0]= SCREEN_WIDTH;
+	ship_pos[1] = SCREEN_HEIGHT;
 
 	//engine:	
 	render_init(SCREEN_WIDTH,SCREEN_HEIGHT,"Space Odyssey");	
@@ -32,9 +32,11 @@ void init()
 
 void move_ship()
 {
-	mouse_pos = global.input.mouse_pos;
-	rotate_dir.x = ship_pos.x - mouse_pos.x;
-	rotate_dir.y = ship_pos.y - mouse_pos.y;
+	//rotate to mouse:
+	mouse_pos[0] = global.input.mouse_pos[0];
+	mouse_pos[1] = global.input.mouse_pos[1];
+	rotate_dir[0]= ship_pos[0]- mouse_pos[0];
+	rotate_dir[1]= ship_pos[1]- mouse_pos[1];
 }
 
 int main(int argc,char* argv[])
@@ -57,13 +59,13 @@ int main(int argc,char* argv[])
 		);
 		render_quad
 		(
-			(vec2) {mouse_pos.x,mouse_pos.y},
+			(vec2) {mouse_pos[0],mouse_pos[1]},
 			(vec2) {20,20},
 			(vec4) {0.7,0.8,1,1}
 		);
 		render_quad
 		(
-			(vec2) {rotate_dir.x,rotate_dir.y},
+			(vec2) {rotate_dir[0],rotate_dir[1]},
 			(vec2) {20,20},
 			(vec4) {1,0.2,0.2,1}
 		);

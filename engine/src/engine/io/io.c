@@ -41,7 +41,6 @@ File read_file(const char *path) // not eff
 		used += n;
 	}
 
-	printf("%s",data);
 	if(ferror(fp))
 	{
 		free(data);
@@ -55,7 +54,7 @@ File read_file(const char *path) // not eff
 	return file;
 }
 
-int write_file(void *buffer, size_t size,const char *path)
+int write_file(void *buffer, size_t size,const char *path) // implement later
 {
 	return 0;
 }

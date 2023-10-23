@@ -19,7 +19,12 @@ int main(int argc,char* argv[])
 	while(!quit)
 	{
 		handle_input(&quit); //takes the quit variable to quit game when x is pressed
+		
+		//computation funcs go here:
+
 		render_begin(); //shows a gray screen when nothing is rendered
+
+		//render funcs go here:
 
 		IVec2 mouse_pos = global.input.mouse_pos;
 		printf("%d,%d\n",mouse_pos.x,mouse_pos.y);

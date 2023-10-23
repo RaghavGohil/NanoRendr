@@ -3,9 +3,12 @@
 #include "../global.h"
 
 //MOUSE:
-inline void set_mouse_pos()
+inline void set_mouse_pos(void)
 {
-	SDL_GetMouseState(&global.input.mouse_pos.x,&global.input.mouse_pos.y);
+	int x,y;
+	SDL_GetMouseState(&x,&y);
+	global.input.mouse_pos[0] = x;
+	global.input.mouse_pos[1] = y; 
 }
 
 //handles all the inputs
