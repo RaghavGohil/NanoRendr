@@ -33,8 +33,8 @@ void init()
 void move_ship()
 {
 	//rotate to mouse:
-	mouse_pos[0] = global.input.mouse_pos[0];
-	mouse_pos[1] = global.input.mouse_pos[1];
+	mouse_pos[0] = global.input_handler.mouse_pos[0];
+	mouse_pos[1] = global.input_handler.mouse_pos[1];
 	rotate_dir[0]= ship_pos[0]- mouse_pos[0];
 	rotate_dir[1]= ship_pos[1]- mouse_pos[1];
 }

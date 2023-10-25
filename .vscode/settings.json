@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "render.h": "c",
+        "global.h": "c",
+        "*.rh": "c",
+        "camera.h": "c",
+        "types.h": "c",
+        "stb_image.h": "c"
+    }
+}

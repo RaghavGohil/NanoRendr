@@ -5,8 +5,8 @@
 
 typedef struct global
 {
-	Render_State render;
-	Input_State input;
+	Window window;
+	Input_Handler input_handler;
 }Global;
 
 extern Global global;

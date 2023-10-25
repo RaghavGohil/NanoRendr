@@ -7,45 +7,12 @@
 #include "../io/io.h"
 
 #include "render.h"
-#include "render_init.h"
+#include "render_internal.h"
 
-SDL_Window *render_init_window(u32 width, u32 height, char* title)
+Sprite* create_sprite(vec3 pos,vec2 size, vec4 color)
 {
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,SDL_GL_CONTEXT_PROFILE_CORE);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION,3);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,3);
+	Sprite res;
 
-	if(SDL_Init(SDL_INIT_VIDEO) != 0)
-		ERROR_EXIT("Failed to initalize SDL%s\n",SDL_GetError());
-
-	SDL_Window *window = SDL_CreateWindow
-	(
-		title,	
-		SDL_WINDOWPOS_CENTERED,
-		SDL_WINDOWPOS_CENTERED,
-		width,
-		height,
-		SDL_WINDOW_OPENGL 
-	);
-	
-	if(!window) 
-		ERROR_EXIT("Failed to initialize the window! %s\n",SDL_GetError());		
-	SDL_GL_CreateContext(window);
-
-	if(!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) //load the gl function pointers
-		ERROR_EXIT("Failed to load GL! %s\n",SDL_GetError());
-
-	printf("OpenGL loaded.\n");
-	printf("Vendor:   %s\n",glGetString(GL_VENDOR));
-	printf("Renderer: %s\n",glGetString(GL_RENDERER));
-	printf("Version:  %s\n",glGetString(GL_VERSION));
-
-	return window;
-}
-
-void render_init_quad(u32 *vao, u32 *vbo, u32 *ebo)
-{
-	//x,y,z,u,v
 	f32 vertices[] = 
 	{
 		0.5,0.5,0,0,0,
@@ -54,31 +21,46 @@ void render_init_quad(u32 *vao, u32 *vbo, u32 *ebo)
 		-0.5,0.5,0,1,0
 	};
 
-	//separate triangular connections
 	u32 indices[] = 
 	{
 		0,1,3,
 		1,2,3
 	};
 
-	glGenVertexArrays(1,vao);
-	glGenBuffers(1,vbo);
-	glGenBuffers(1,ebo);
+	glGenVertexArrays(1,res.vao);
+	glGenBuffers(1,res.vbo);
+	glGenBuffers(1,res.ebo);
 
-	glBindVertexArray(*vao);
+	glBindVertexArray(&res.vao);
 
-	glBindBuffer(GL_ARRAY_BUFFER,*vbo);
+	glBindBuffer(GL_ARRAY_BUFFER,&res.vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,*ebo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,&res.ebo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,5*sizeof(f32),NULL);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,5*sizeof(f32),(void*)(3*sizeof(f32)));
 	glad_glEnableVertexAttribArray(1);
+
+
+	return &res;
 }
-void render_init_color_texture(u32 *texture)
+void blit_sprite(Sprite* sprite, vec2 pos, vec2 size, vec4 color)
+{
+	glUseProgram(sprite->shader);
+	mat4x4_identity(sprite->model);
+	mat4x4_translate(sprite->model,pos[0],pos[1],0);
+	mat4x4_scale_aniso(sprite->model,sprite->model,size[0],size[1],1);
+	glUniformMatrix4fv(glGetUniformLocation(sprite->shader,"model"),1,GL_FALSE,&sprite->model[0][0]);
+	glUniform4fv(glad_glGetUniformLocation(sprite->shader,"color"),1,color);
+	glBindVertexArray(sprite->vao);
+	glBindTexture(GL_TEXTURE_2D,sprite->texture);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
+	glBindVertexArray(0);
+}
+void render_init_sprite_color_texture(u32 *texture)
 {
 	glGenTextures(1,texture);
 	glBindTexture(GL_TEXTURE_2D, *texture);
@@ -86,17 +68,17 @@ void render_init_color_texture(u32 *texture)
 	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,1,1,0,GL_RGBA,GL_UNSIGNED_BYTE,solid_white);
 	glBindTexture(GL_TEXTURE_2D,0);
 }
-void render_init_shaders(Render_State_Internal *state)
+void render_init_shaders(Sprite* sprite)
 {
-	state->shader_default = render_shader_create("./shaders/default.vert","./shaders/default.frag");
-	mat4x4_ortho(state->projection,0,global.render.width,global.render.height,0,-2,2); // to simulate the sdl game engines.
-	glUseProgram(state->shader_default);
+	sprite->shader = render_shader_create("./shaders/default.vert","./shaders/default.frag");
+	mat4x4_ortho(global.window.renderer.projection,0,global.window.width,global.window.height,0,-2,2); // to simulate the sdl game engines.
+	glUseProgram(sprite->shader);
 	glUniformMatrix4fv
 	(
-		glGetUniformLocation(state->shader_default,"projection"),
+		glGetUniformLocation(sprite->shader,"projection"),
 		1,
 		GL_FALSE,
-		&state->projection[0][0]
+		&global.window.renderer.projection[0][0]
 	);
 }
 u32 render_shader_create(const char *path_vert, const char *path_frag)

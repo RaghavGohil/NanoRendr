@@ -6,12 +6,12 @@
 #include "linmath.h"
 #include <stdbool.h>
 
-typedef struct input
+typedef struct input_handler 
 {
 	SDL_Event event;
 	//MOUSE:
 	vec2 mouse_pos;
-}Input_State;
+}Input_Handler;
 
 //events which will be checked in handle_input
 void handle_input(bool *exit); // handles all the events 

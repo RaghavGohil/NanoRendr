@@ -7,15 +7,15 @@ inline void set_mouse_pos(void)
 {
 	int x,y;
 	SDL_GetMouseState(&x,&y);
-	global.input.mouse_pos[0] = x;
-	global.input.mouse_pos[1] = y; 
+	global.input_handler.mouse_pos[0] = x;
+	global.input_handler.mouse_pos[1] = y; 
 }
 
 //handles all the inputs
 void handle_input(bool *exit)
 {
 	SDL_Event e;
-	global.input.event = e;
+	global.input_handler.event = e;
 	while(SDL_PollEvent(&e))
 	{
 		switch(e.type)

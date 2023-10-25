@@ -5,16 +5,20 @@
 
 #include "../types.h"
 
-typedef struct render_state 
+typedef struct renderer
+{
+	mat4x4 projection,view;
+}Renderer;
+
+typedef struct window 
 {
 	SDL_Window *window;
 	f32 width;
 	f32 height;
 	char *title;
-} Render_State;
+	Renderer renderer;
+}Window;
 
-void render_init(u32 width,u32 height,char *title);
+SDL_Window* render_init_window(u32 height, u32 width, char* title);
 void render_begin(void);
 void render_end(void);
-
-void render_quad(vec2 pos, vec2 size, vec4 color);
