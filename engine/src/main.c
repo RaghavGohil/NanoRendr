@@ -27,7 +27,7 @@ void init()
 	ship_pos[1] = SCREEN_HEIGHT;
 
 	//engine:	
-	render_init(SCREEN_WIDTH,SCREEN_HEIGHT,"Space Odyssey");	
+	render_init_window(SCREEN_WIDTH,SCREEN_HEIGHT,"Space Odyssey");	
 }
 
 void move_ship()
@@ -51,24 +51,8 @@ int main(int argc,char* argv[])
 
 		render_begin(); //shows a gray screen when nothing is rendered
 
-		render_quad
-		(
-			(vec2) {SCREEN_WIDTH/2,SCREEN_HEIGHT/2},
-			(vec2) {50,50},
-			(vec4) {0.4,0.8,0.2,1}
-		);
-		render_quad
-		(
-			(vec2) {mouse_pos[0],mouse_pos[1]},
-			(vec2) {20,20},
-			(vec4) {0.7,0.8,1,1}
-		);
-		render_quad
-		(
-			(vec2) {rotate_dir[0],rotate_dir[1]},
-			(vec2) {20,20},
-			(vec4) {1,0.2,0.2,1}
-		);
+		//Sprite *sprite = create_sprite("");
+		//blit_sprite(sprite,(vec2){20,20},(vec2){20,20},(vec4){255,255,0,0});
 
 		render_end();
 	}

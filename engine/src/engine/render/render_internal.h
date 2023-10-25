@@ -20,5 +20,5 @@ typedef struct sprite
 Sprite* create_sprite(const char* path_image);
 void blit_sprite(Sprite* sprite, vec2 pos, vec2 size, vec4 color);
 void create_texture(u32 *texture);
-void set_shaders(Sprite* sprite);
+void set_shaders(u32 *shader);
 u32 create_shader(const char *path_vert, const char *path_frag);

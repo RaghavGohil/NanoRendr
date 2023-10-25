@@ -9,9 +9,9 @@
 #include "render.h"
 #include "render_internal.h"
 
-Sprite* create_sprite(vec3 pos,vec2 size, vec4 color)
+Sprite* create_sprite(const char* path)
 {
-	Sprite res;
+	Sprite *res = (Sprite*) malloc(sizeof(Sprite));
 
 	f32 vertices[] = 
 	{
@@ -27,16 +27,16 @@ Sprite* create_sprite(vec3 pos,vec2 size, vec4 color)
 		1,2,3
 	};
 
-	glGenVertexArrays(1,res.vao);
-	glGenBuffers(1,res.vbo);
-	glGenBuffers(1,res.ebo);
+	glGenVertexArrays(1,&res->vao);
+	glGenBuffers(1,&res->vbo);
+	glGenBuffers(1,&res->ebo);
 
-	glBindVertexArray(&res.vao);
+	glBindVertexArray(res->vao);
 
-	glBindBuffer(GL_ARRAY_BUFFER,&res.vbo);
+	glBindBuffer(GL_ARRAY_BUFFER,res->vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,&res.ebo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,res->ebo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,5*sizeof(f32),NULL);
@@ -44,9 +44,12 @@ Sprite* create_sprite(vec3 pos,vec2 size, vec4 color)
 	glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,5*sizeof(f32),(void*)(3*sizeof(f32)));
 	glad_glEnableVertexAttribArray(1);
 
+	create_texture(&res->texture);
+	set_shaders(&res->shader);
 
-	return &res;
+	return res;
 }
+
 void blit_sprite(Sprite* sprite, vec2 pos, vec2 size, vec4 color)
 {
 	glUseProgram(sprite->shader);
@@ -60,7 +63,7 @@ void blit_sprite(Sprite* sprite, vec2 pos, vec2 size, vec4 color)
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 	glBindVertexArray(0);
 }
-void render_init_sprite_color_texture(u32 *texture)
+void create_texture(u32 *texture)
 {
 	glGenTextures(1,texture);
 	glBindTexture(GL_TEXTURE_2D, *texture);
@@ -68,20 +71,20 @@ void render_init_sprite_color_texture(u32 *texture)
 	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,1,1,0,GL_RGBA,GL_UNSIGNED_BYTE,solid_white);
 	glBindTexture(GL_TEXTURE_2D,0);
 }
-void render_init_shaders(Sprite* sprite)
+void set_shaders(u32 *shader)
 {
-	sprite->shader = render_shader_create("./shaders/default.vert","./shaders/default.frag");
+	*shader = create_shader("./shaders/default.vert","./shaders/default.frag");
 	mat4x4_ortho(global.window.renderer.projection,0,global.window.width,global.window.height,0,-2,2); // to simulate the sdl game engines.
-	glUseProgram(sprite->shader);
+	glUseProgram(*shader);
 	glUniformMatrix4fv
 	(
-		glGetUniformLocation(sprite->shader,"projection"),
+		glGetUniformLocation(*shader,"projection"),
 		1,
 		GL_FALSE,
 		&global.window.renderer.projection[0][0]
 	);
 }
-u32 render_shader_create(const char *path_vert, const char *path_frag)
+u32 create_shader(const char *path_vert, const char *path_frag)
 {
 	int success=0;
 	char log[512];

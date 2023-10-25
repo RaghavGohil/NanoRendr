@@ -2,6 +2,7 @@
 
 #include <SDL2/SDL.h>
 #include <linmath.h>
+#include "render_internal.h"
 
 #include "../types.h"
 
