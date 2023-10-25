@@ -53,8 +53,3 @@ File read_file(const char *path) // not eff
 	file.isValid = true;
 	return file;
 }
-
-int write_file(void *buffer, size_t size,const char *path) // implement later
-{
-	return 0;
-}

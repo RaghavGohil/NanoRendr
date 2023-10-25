@@ -2,7 +2,6 @@
 
 #include "render/render.h"
 #include "input/input.h"
-#include "math/math.h"
 
 typedef struct global
 {
