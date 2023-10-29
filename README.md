@@ -1,7 +1,7 @@
 ![NanoRendr](https://github.com/RaghavGohil/NanoRendr/assets/71706645/a73cb240-ed34-4ac8-bfac-bce514f21820)
 
 # Introduction
-NanoRendr is a lightweight game engine written in c using OpenGL and SDL.
+A lightweight open-source game engine in making made in c with opengl and sdl.
 
 # The engine
 ![image](https://github.com/RaghavGohil/NanoRendr/assets/71706645/84d2e328-8e6e-4c7c-a18c-75aba467ae37)
