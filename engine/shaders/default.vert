@@ -5,10 +5,11 @@ layout (location = 1) in vec3 a_uvs;
 out vec2 uvs;
 
 uniform mat4 projection;
+uniform mat4 view;
 uniform mat4 model;
 
 void main()
 {
-	gl_Position = projection*model*vec4(a_pos,1.0);
+	gl_Position = projection*view*model*vec4(a_pos,1.0);
 	uvs = a_uvs.xy;
 }

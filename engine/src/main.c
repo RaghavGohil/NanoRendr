@@ -43,6 +43,11 @@ int main(int argc,char* argv[])
 {
 	init();
 
+	Camera* camera;
+	camera = camera_init(-1000,1000,1);	
+	camera_move(camera,(vec2){10,10});
+	camera_use(camera);
+
 	Sprite *sprite = create_sprite("");
 
 	while(!quit)

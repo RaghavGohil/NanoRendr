@@ -1,7 +1,7 @@
 #pragma once
 
 #include <linmath.h>
-#include <../types.h>
+#include "../types.h"
 
 typedef struct camera
 {
@@ -10,6 +10,7 @@ typedef struct camera
     mat4x4 view;
 }Camera;
 
-Camera* init_camera(i16 near, i16 far, f32 aspect_ratio);
+Camera* camera_init(i16 near, i16 far, f32 aspect_ratio);
 
-void use_camera(Camera* camera);
+void camera_use(Camera* camera);
+void camera_move(Camera* camera, vec2 pos);

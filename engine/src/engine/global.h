@@ -2,6 +2,7 @@
 
 #include "render/render.h"
 #include "input/input.h"
+#include "camera/camera.h"
 
 typedef struct global
 {

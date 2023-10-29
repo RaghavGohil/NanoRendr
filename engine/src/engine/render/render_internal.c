@@ -82,6 +82,13 @@ void set_shaders(u32 *shader)
 		GL_FALSE,
 		&global.window.renderer.projection[0][0]
 	);
+	glUniformMatrix4fv
+	(
+		glGetUniformLocation(*shader,"view"),
+		1,
+		GL_FALSE,
+		&global.window.renderer.view[0][0]
+	);
 }
 u32 create_shader(const char *path_vert, const char *path_frag)
 {
