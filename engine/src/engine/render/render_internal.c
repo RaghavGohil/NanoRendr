@@ -74,7 +74,6 @@ void create_texture(u32 *texture)
 void set_shaders(u32 *shader)
 {
 	*shader = create_shader("./shaders/default.vert","./shaders/default.frag");
-	mat4x4_ortho(global.window.renderer.projection,0,global.window.width,global.window.height,0,-2,2); // to simulate the sdl game engines.
 	glUseProgram(*shader);
 	glUniformMatrix4fv
 	(

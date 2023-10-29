@@ -27,7 +27,7 @@ void init()
 	ship_pos[1] = SCREEN_HEIGHT;
 
 	//engine:	
-	render_init_window(SCREEN_WIDTH,SCREEN_HEIGHT,"Space Odyssey");	
+	render_init(SCREEN_WIDTH,SCREEN_HEIGHT,"Game");	
 }
 
 void move_ship()
@@ -43,6 +43,8 @@ int main(int argc,char* argv[])
 {
 	init();
 
+	Sprite *sprite = create_sprite("");
+
 	while(!quit)
 	{
 		handle_input(&quit); //takes the quit variable to quit game when x is pressed
@@ -51,10 +53,11 @@ int main(int argc,char* argv[])
 
 		render_begin(); //shows a gray screen when nothing is rendered
 
-		//Sprite *sprite = create_sprite("");
-		//blit_sprite(sprite,(vec2){20,20},(vec2){20,20},(vec4){255,255,0,0});
+		blit_sprite(sprite,(vec2){20,20},(vec2){20,20},(vec4){255,255,0,0});
 
 		render_end();
 	}
+	free(sprite);
+	sprite = NULL;
 	return 0;
 }

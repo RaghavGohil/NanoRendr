@@ -20,6 +20,7 @@ typedef struct window
 	Renderer renderer;
 }Window;
 
-SDL_Window* render_init_window(u32 height, u32 width, char* title);
+void render_init(u32 height, u32 width, char* title);
+static SDL_Window* render_init_window(u32 height, u32 width, char* title);
 void render_begin(void);
 void render_end(void);

@@ -6,9 +6,17 @@
 #include "../util.h"
 #include <stdio.h>
 
-static Window window= {0};
+void render_init(u32 width, u32 height, char *title)
+{
+	global.window.width = width;
+	global.window.height = height;
+	global.window.title = title;
+	global.window.window = render_init_window(global.window.width,global.window.height,global.window.title);
+	mat4x4_identity(global.window.renderer.view);
+	mat4x4_ortho(global.window.renderer.projection,0,global.window.width,global.window.height,0,-2,2); // to simulate the sdl game engines.
+}
 
-SDL_Window *render_init_window(u32 width, u32 height, char* title)
+static SDL_Window *render_init_window(u32 width, u32 height, char* title)
 {
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,SDL_GL_CONTEXT_PROFILE_CORE);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION,3);
@@ -41,17 +49,6 @@ SDL_Window *render_init_window(u32 width, u32 height, char* title)
 
 	return window;
 }
-
-/*void render_init(u32 width, u32 height, char *title)
-{
-	global.window.width = width;
-	global.window.height = height;
-	global.window.title = title;
-	global.window.window = render_init_window(global.window.width,global.window.height,global.window.title);
-	render_init_quad(&state.vao_quad, &state.vbo_quad, &state.ebo_quad);
-	render_init_shaders(&state);
-	render_init_color_texture(&state.texture_color);
-}*/
 
 void render_begin(void)
 {
