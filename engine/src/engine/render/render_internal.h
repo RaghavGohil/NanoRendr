@@ -15,10 +15,17 @@ typedef struct sprite
 	u32 texture;
 	mat4x4 model;
 	vec4 color;
+	i32 width,height;
 }Sprite;
 
+typedef struct sprite_sheet
+{
+	Sprite sprite; // sprite is the entire sheet here (as of now)
+	u32 rows,columns;
+}Sprite_Sheet;
+
 Sprite* create_sprite(const char* path_image);
-void blit_sprite(Sprite* sprite, vec2 pos, vec2 size, vec4 color);
-void create_texture(u32 *texture);
-void set_shaders(u32 *shader);
-u32 create_shader(const char *path_vert, const char *path_frag);
+void blit_sprite(Sprite* sprite, vec2 pos, vec2 size , vec4 color);
+static void create_texture(const char* path, u32 *texture,i32* width, i32* height);
+static void set_shaders(u32 *shader);
+static u32 create_shader(const char *path_vert, const char *path_frag);

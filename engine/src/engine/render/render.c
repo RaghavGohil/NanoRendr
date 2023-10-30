@@ -1,7 +1,5 @@
 #include <glad/glad.h>
 #include "../global.h"
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
 #include "render.h"
 #include "../util.h"
 #include <stdio.h>

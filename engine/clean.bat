@@ -1,1 +1,1 @@
-del .\*.ilk .\*.exe .\*.obj .\*.pdb
+del .\*.ilk .\*.exe .\*.o .\*.pdb

@@ -27,7 +27,7 @@ void init()
 	ship_pos[1] = SCREEN_HEIGHT;
 
 	//engine:	
-	render_init(SCREEN_WIDTH,SCREEN_HEIGHT,"Game");	
+	render_init(SCREEN_WIDTH,SCREEN_HEIGHT,"NanoRendr Engine");	
 }
 
 void move_ship()
@@ -45,10 +45,10 @@ int main(int argc,char* argv[])
 
 	Camera* camera;
 	camera = camera_init(-1000,1000,1);	
-	camera_move(camera,(vec2){10,10});
+	camera_move(camera,(vec2){20,20});
 	camera_use(camera);
 
-	Sprite *sprite = create_sprite("");
+	Sprite *sprite = create_sprite("mario.png");
 
 	while(!quit)
 	{
@@ -58,11 +58,13 @@ int main(int argc,char* argv[])
 
 		render_begin(); //shows a gray screen when nothing is rendered
 
-		blit_sprite(sprite,(vec2){20,20},(vec2){20,20},(vec4){255,255,0,0});
+		blit_sprite(sprite,(vec2){300,300},(vec2){360,360},(vec4){255,255,255,0});
 
 		render_end();
 	}
 	free(sprite);
+	free(camera);
 	sprite = NULL;
+	camera = NULL;
 	return 0;
 }

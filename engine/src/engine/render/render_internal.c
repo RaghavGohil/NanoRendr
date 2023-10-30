@@ -1,6 +1,9 @@
 #include <glad/glad.h>
 #include <SDL2/SDL.h>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+
 #include "../util.h"
 #include "../types.h"
 #include "../global.h"
@@ -15,10 +18,10 @@ Sprite* create_sprite(const char* path)
 
 	f32 vertices[] = 
 	{
-		0.5,0.5,0,0,0,
-		0.5,-0.5,0,0,1,
-		-0.5,-0.5,0,1,1,
-		-0.5,0.5,0,1,0
+		0.5,0.5,      0,0,0,   1,1,
+		0.5,-0.5,     0,0,1,   1,-1,
+		-0.5,-0.5,    0,1,1,   -1,-1,
+		-0.5,0.5,     0,1,0,   -1,1
 	};
 
 	u32 indices[] = 
@@ -42,9 +45,12 @@ Sprite* create_sprite(const char* path)
 	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,5*sizeof(f32),NULL);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,5*sizeof(f32),(void*)(3*sizeof(f32)));
+
+	glVertexAttribPointer(2,2,GL_FLOAT,GL_FALSE,8*sizeof(f32),(void*)(6*sizeof(float)));
+	create_texture(path,&res->texture,&res->width,&res->height);
+
 	glad_glEnableVertexAttribArray(1);
 
-	create_texture(&res->texture);
 	set_shaders(&res->shader);
 
 	return res;
@@ -63,15 +69,31 @@ void blit_sprite(Sprite* sprite, vec2 pos, vec2 size, vec4 color)
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 	glBindVertexArray(0);
 }
-void create_texture(u32 *texture)
+static void create_texture(const char* path, u32 *texture, i32* width, i32* height)
 {
+	i32 nr_channels;
 	glGenTextures(1,texture);
 	glBindTexture(GL_TEXTURE_2D, *texture);
-	u8 solid_white[4] = {255,255,255,255};		
-	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,1,1,0,GL_RGBA,GL_UNSIGNED_BYTE,solid_white);
-	glBindTexture(GL_TEXTURE_2D,0);
+	// gl repeat is by default
+	if(path == NULL)
+	{
+		u8 solid_white[4] = {255,255,255,255}; // for sprites with no textures		
+		glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,1,1,0,GL_RGBA,GL_UNSIGNED_BYTE,solid_white);
+	}
+	else
+	{
+		unsigned char *data = stbi_load(path,width,height,&nr_channels,0);
+		if(data)
+			glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,*width,*height,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
+		else
+			ERROR_EXIT("Unable to load texture file.");
+		stbi_image_free(data);
+	}
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE0,*texture);
 }
-void set_shaders(u32 *shader)
+static void set_shaders(u32 *shader)
 {
 	*shader = create_shader("./shaders/default.vert","./shaders/default.frag");
 	glUseProgram(*shader);
@@ -90,7 +112,7 @@ void set_shaders(u32 *shader)
 		&global.window.renderer.view[0][0]
 	);
 }
-u32 create_shader(const char *path_vert, const char *path_frag)
+static u32 create_shader(const char *path_vert, const char *path_frag)
 {
 	int success=0;
 	char log[512];
