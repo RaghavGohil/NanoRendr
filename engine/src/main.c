@@ -45,10 +45,10 @@ int main(int argc,char* argv[])
 
 	Camera* camera;
 	camera = camera_init(-1000,1000,1);	
-	camera_move(camera,(vec2){20,20});
+	camera_move(camera,(vec2){300,300});
 	camera_use(camera);
 
-	Sprite *sprite = create_sprite("mario.png");
+	Sprite *sprite = create_sprite("images/player.png");
 
 	while(!quit)
 	{
@@ -58,7 +58,7 @@ int main(int argc,char* argv[])
 
 		render_begin(); //shows a gray screen when nothing is rendered
 
-		blit_sprite(sprite,(vec2){100,100},(vec2){100,100},(vec4){0,0,0,0});
+		blit_sprite(sprite,(vec2){0,0},(vec2){200,200},(vec4){1,1,1,1});
 
 		render_end();
 	}

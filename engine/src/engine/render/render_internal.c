@@ -59,7 +59,7 @@ void blit_sprite(Sprite* sprite, vec2 pos, vec2 size, vec4 color)
 	glUseProgram(sprite->shader);
 	mat4x4_identity(sprite->model);
 	mat4x4_translate(sprite->model,pos[0],pos[1],0);
-	mat4x4_scale_aniso(sprite->model,sprite->model,-size[0],size[1],1);
+	mat4x4_scale_aniso(sprite->model,sprite->model,-size[0],size[1],1); // to avoid the horizontal flipping 
 	glUniformMatrix4fv(glGetUniformLocation(sprite->shader,"model"),1,GL_FALSE,&sprite->model[0][0]);
 	glUniform4fv(glad_glGetUniformLocation(sprite->shader,"color"),1,color);
 	glBindVertexArray(sprite->vao);
@@ -75,13 +75,13 @@ static void create_texture(const char* path, u32 *texture, i32* width, i32* heig
 	glBindTexture(GL_TEXTURE_2D, *texture);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	// gl repeat is by default
 	if(path == NULL)
 	{
-		u8 solid_white[4] = {255,0,255,255}; // for sprites with no textures		
-		glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,1,1,0,GL_RGBA,GL_UNSIGNED_BYTE,solid_white);
+		u8 no_texture[4] = {255,0,255,255}; // for sprites with no textures		
+		glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,1,1,0,GL_RGBA,GL_UNSIGNED_BYTE,no_texture);
 	}
 	else
 	{
@@ -94,7 +94,7 @@ static void create_texture(const char* path, u32 *texture, i32* width, i32* heig
 				glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,*width,*height,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
 		}
 		else
-			ERROR_EXIT("Unable to load texture file.");
+			ERROR_EXIT("Unable to load texture file. At %s.", path);
 		stbi_image_free(data);
 	}
 	glGenerateMipmap(GL_TEXTURE_2D);
