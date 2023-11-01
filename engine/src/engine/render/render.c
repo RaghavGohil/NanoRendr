@@ -11,7 +11,7 @@ void render_init(u32 width, u32 height, char *title)
 	global.window.title = title;
 	global.window.window = render_init_window(global.window.width,global.window.height,global.window.title);
 	mat4x4_identity(global.window.renderer.view);
-	mat4x4_ortho(global.window.renderer.projection,0,global.window.width,global.window.height,0,-2,2); // to simulate the sdl game engines.
+	mat4x4_ortho(global.window.renderer.projection,0,global.window.width,0,global.window.height,-2,2); // to simulate the sdl game engines.
 }
 
 static SDL_Window *render_init_window(u32 width, u32 height, char* title)

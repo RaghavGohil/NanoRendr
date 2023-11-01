@@ -18,10 +18,10 @@ Sprite* create_sprite(const char* path)
 
 	f32 vertices[] = 
 	{
-		0.5,0.5,      0,0,0,   1,1,
-		0.5,-0.5,     0,0,1,   1,-1,
-		-0.5,-0.5,    0,1,1,   -1,-1,
-		-0.5,0.5,     0,1,0,   -1,1
+		1,1,0,    0,0,
+		1,-1,0,   0,1,
+		-1,-1,0,  1,1,
+		-1,1,0,   1,0
 	};
 
 	u32 indices[] = 
@@ -45,11 +45,9 @@ Sprite* create_sprite(const char* path)
 	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,5*sizeof(f32),NULL);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,5*sizeof(f32),(void*)(3*sizeof(f32)));
-
-	glVertexAttribPointer(2,2,GL_FLOAT,GL_FALSE,8*sizeof(f32),(void*)(6*sizeof(float)));
+	glEnableVertexAttribArray(1);
 	create_texture(path,&res->texture,&res->width,&res->height);
 
-	glad_glEnableVertexAttribArray(1);
 
 	set_shaders(&res->shader);
 
@@ -61,7 +59,7 @@ void blit_sprite(Sprite* sprite, vec2 pos, vec2 size, vec4 color)
 	glUseProgram(sprite->shader);
 	mat4x4_identity(sprite->model);
 	mat4x4_translate(sprite->model,pos[0],pos[1],0);
-	mat4x4_scale_aniso(sprite->model,sprite->model,size[0],size[1],1);
+	mat4x4_scale_aniso(sprite->model,sprite->model,-size[0],size[1],1);
 	glUniformMatrix4fv(glGetUniformLocation(sprite->shader,"model"),1,GL_FALSE,&sprite->model[0][0]);
 	glUniform4fv(glad_glGetUniformLocation(sprite->shader,"color"),1,color);
 	glBindVertexArray(sprite->vao);
@@ -69,29 +67,37 @@ void blit_sprite(Sprite* sprite, vec2 pos, vec2 size, vec4 color)
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 	glBindVertexArray(0);
 }
+
 static void create_texture(const char* path, u32 *texture, i32* width, i32* height)
 {
 	i32 nr_channels;
 	glGenTextures(1,texture);
 	glBindTexture(GL_TEXTURE_2D, *texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	// gl repeat is by default
 	if(path == NULL)
 	{
-		u8 solid_white[4] = {255,255,255,255}; // for sprites with no textures		
+		u8 solid_white[4] = {255,0,255,255}; // for sprites with no textures		
 		glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,1,1,0,GL_RGBA,GL_UNSIGNED_BYTE,solid_white);
 	}
 	else
 	{
 		unsigned char *data = stbi_load(path,width,height,&nr_channels,0);
-		if(data)
-			glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,*width,*height,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
+		if(data != NULL)
+		{
+			if(nr_channels == 3)
+				glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,*width,*height,0,GL_RGB,GL_UNSIGNED_BYTE,data);
+			if(nr_channels == 4)
+				glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,*width,*height,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
+		}
 		else
 			ERROR_EXIT("Unable to load texture file.");
 		stbi_image_free(data);
 	}
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE0,*texture);
+	glGenerateMipmap(GL_TEXTURE_2D);
 }
 static void set_shaders(u32 *shader)
 {

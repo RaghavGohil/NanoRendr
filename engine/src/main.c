@@ -5,7 +5,7 @@
 
 #pragma region CONFIG 
 
-#define SCREEN_WIDTH 800
+#define SCREEN_WIDTH 600 
 #define SCREEN_HEIGHT 600 
 
 static bool quit = false;
@@ -58,7 +58,7 @@ int main(int argc,char* argv[])
 
 		render_begin(); //shows a gray screen when nothing is rendered
 
-		blit_sprite(sprite,(vec2){300,300},(vec2){360,360},(vec4){255,255,255,0});
+		blit_sprite(sprite,(vec2){100,100},(vec2){100,100},(vec4){0,0,0,0});
 
 		render_end();
 	}
